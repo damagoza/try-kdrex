@@ -1,33 +1,48 @@
-<%= form_for(@project) do |f| %>
-  <% if @project.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@project.errors.count, "error") %> prohibited this project from being saved:</h2>
+<div class="container">
+  <%= form_for(@project, :html => {:class => 'form-app'}) do |f| %>
+      <%= f.hidden_field :user_id, :value => current_user.id %>
+      <div class="form-group">
+        <label for="inputEmail" class="sr-only">Email</label>
+        <%= f.text_field :name, autofocus: true, :type => 'text', :id => 'inputEmail', :class => 'form-control', :placeholder => 'Nombre del proyecto', :required => 'Nombre requerido' %>        
+      </div>
+      <div class="form-group">
+        <input type="text" class="form-control" value="<%= current_user.email %>" disabled></input>
+      </div>
+      
+      <div class="form-group">
+          <p class="form-group">Fecha de inicio actual: <%= @project.start_project%></p>  
+          <div class='input-group date' id='start_project'>
+              <%= f.text_field :start_project, :id => 'start_project', :class => 'datepicker form-control', :placeholder => 'Fecha de inicio del proyecto' %>
+              <span class="input-group-addon">
+                  <span class="glyphicon glyphicon-calendar"></span>
+              </span>
+          </div>
+      </div>
+      <div class="form-group">
+        <p class="form-group">Fecha de finalzación actual: <%= @project.end_project%></p>  
+          <div class='input-group date' id='end_project'>
+              <%= f.text_field :end_project, :class => 'datepicker form-control', :placeholder => 'Fecha de finalzación del proyecto' %>
+              <span class="input-group-addon">
+                  <span class="glyphicon glyphicon-calendar"></span>
+              </span>
+          </div>
+      </div>
+      <div class="form-group">
+        <h3 for="comment">Descripción:</h3>
+        <%= f.text_area :description, :size => "0x10", autofocus: true, :type => 'text', :id => 'description', :class => 'form-control', :placeholder => 'Breve Descripcioón del proyecto', :required => 'Nombre requerido'%>        
+      </div>
 
-      <ul>
-      <% @project.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
+      <%= f.submit "Crear proyecto", :class => 'btn btn-success' %>
   <% end %>
+</div>
 
-  <div class="field">
-    <%= f.label :name %><br>
-    <%= f.text_field :name %>
-  </div>
-  <div class="field">
-    <%= f.label :user_id %><br>
-    <%= f.text_field :user_id %>
-  </div>
-  <div class="field">
-    <%= f.label :start_project %><br>
-    <%= f.date_select :start_project %>
-  </div>
-  <div class="field">
-    <%= f.label :end_project %><br>
-    <%= f.date_select :end_project %>
-  </div>
-  <div class="actions">
-    <%= f.submit %>
-  </div>
-<% end %>
+
+<script type="text/javascript">
+  $(function () {
+    $('#start_project').datetimepicker();
+    $('#end_project').datetimepicker();
+  });
+  $( document ).ready(function() {
+    
+});
+</script>

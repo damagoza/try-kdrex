@@ -7,4 +7,13 @@ module UserHelper
 		end
 		return resultado
 	end
+
+	def rol_user(user_id)
+		cadena = ""
+		ur = UserRole.where(:user_id => user_id).first
+		if ur != nil
+			cadena = ur.role.name
+		end
+		return cadena
+	end
 end

@@ -4,7 +4,8 @@ class TasksController < ApplicationController
   # GET /tasks
   # GET /tasks.json
   def index
-    @tasks = Task.all
+    @project = Project.find(params[:project_id])
+    @tasks = Task.where(:project_id => params[:project_id])
   end
 
   # GET /tasks/1
@@ -14,6 +15,8 @@ class TasksController < ApplicationController
 
   # GET /tasks/new
   def new
+    puts "LLe en params[:project_id] => #{params[:project_id]}"    
+    @project = Project.find(params[:project_id])
     @task = Task.new
   end
 
@@ -25,10 +28,12 @@ class TasksController < ApplicationController
   # POST /tasks.json
   def create
     @task = Task.new(task_params)
-
+    @task.start_task = DateTime.strptime("#{task_params[:start_task].split('/')[2].split(' ')[0]}#{task_params[:start_task].split('/')[0]}#{task_params[:start_task].split('/')[1]}","%Y%m%d")
+    @task.end_task = DateTime.strptime("#{task_params[:end_task].split('/')[2].split(' ')[0]}#{task_params[:end_task].split('/')[0]}#{task_params[:end_task].split('/')[1]}","%Y%m%d")
     respond_to do |format|
       if @task.save
-        format.html { redirect_to @task, notice: 'Task was successfully created.' }
+        UserMailer.notification_task(@task.project, @task.user).deliver_now
+        format.html { redirect_to tasks_path(:project_id => @task.project_id), notice: 'Task was successfully created.' }
         format.json { render :show, status: :created, location: @task }
       else
         format.html { render :new }
@@ -69,6 +74,6 @@ class TasksController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def task_params
-      params.require(:task).permit(:name, :project_id, :user_id, :start_task, :end_task, :state)
+      params.require(:task).permit(:name, :project_id, :user_id, :start_task, :end_task, :state, :description)
     end
 end
