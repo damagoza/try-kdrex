@@ -1,6 +1,7 @@
 class ProjectsController < ApplicationController
   before_action :set_project, only: [:show, :edit, :update, :destroy]
   include UserHelper
+  before_action :authenticate_user!
   # GET /projects
   # GET /projects.json
   def index
@@ -8,8 +9,7 @@ class ProjectsController < ApplicationController
       @projects = Project.where(:user_id => current_user.id)
     else
       @projects = Project.where(:id => Task.where(:user_id => current_user.id).select(:project_id))
-    end
-    
+    end    
   end
 
   # GET /projects/1
